@@ -1,0 +1,14 @@
+# Maven
+target/
+*.class
+
+# IntelliJ
+.idea/
+*.iml
+*.iws
+
+# Logs
+*.log
+
+# Citlivé soubory - NESMÍ na GitHub!
+src/main/resources/application.properties
