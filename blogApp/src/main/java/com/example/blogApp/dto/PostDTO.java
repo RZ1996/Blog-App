@@ -13,6 +13,7 @@ public class PostDTO {
     private Long id;
     private String title;
     private String excerpt;
+    private String content;
     private String authorName;
     private List<String> tags;
     private String status;

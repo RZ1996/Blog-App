@@ -1,5 +1,6 @@
 package com.example.blogApp.service;
 
+import com.example.blogApp.dto.LoginRequest;
 import com.example.blogApp.dto.UserDTO;
 import com.example.blogApp.entity.User;
 import com.example.blogApp.mapper.UserMapper;
@@ -28,9 +29,9 @@ public class UserService {
     }
 
 
-    public UserDTO loginUser(String email, String password) {
-        User user = findByEmail(email);
-        if (!user.getPassword().equals(password)) {
+    public UserDTO loginUser(LoginRequest loginRequest) {
+        User user = findByEmail(loginRequest.getEmail());
+        if (!user.getPassword().equals(loginRequest.getPassword())) {
             throw new RuntimeException("Wrong password");
         }
         return UserMapper.INSTANCE.mapUserToUserDTO(user);
