@@ -1,7 +1,5 @@
 package com.example.blogApp.controller;
-
 import com.example.blogApp.dto.PostDTO;
-import com.example.blogApp.entity.Post;
 import com.example.blogApp.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

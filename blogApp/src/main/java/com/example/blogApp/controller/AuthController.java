@@ -1,5 +1,6 @@
 package com.example.blogApp.controller;
 import com.example.blogApp.dto.LoginRequest;
+import com.example.blogApp.dto.RegisterRequest;
 import com.example.blogApp.dto.UserDTO;
 import com.example.blogApp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,8 @@ public class AuthController {
     @Autowired
     UserService userService;
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userDTO){
-        UserDTO savedUser = userService.addUser(userDTO);
+    public ResponseEntity<UserDTO> registerUser(@RequestBody RegisterRequest request){
+        UserDTO savedUser = userService.addUser(request);
         return ResponseEntity.status(201).body(savedUser);
     }
 
