@@ -1,7 +1,8 @@
 package com.example.blogApp.controller;
-import com.example.blogApp.service.JwtService;
+
+import com.example.blogApp.dto.PostDTO;
 import com.example.blogApp.service.PostService;
-import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,34 +10,33 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
-@RequiredArgsConstructor
 public class PostController {
 
     @Autowired
     PostService postService;
 
     @GetMapping
-    public ResponseEntity<List<JwtService.PostDTO>> getAllPosts() {
+    public ResponseEntity<List<PostDTO>> getAllPosts() {
         return ResponseEntity.ok(postService.getAllPosts());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<JwtService.PostDTO> getPostById(@PathVariable Long id) {
+    public ResponseEntity<PostDTO> getPostById(@PathVariable Long id) {
         return ResponseEntity.ok(postService.getPostById(id));
     }
 
     @GetMapping("/tag")
-    public ResponseEntity<List<JwtService.PostDTO>> getPostsByTag(@RequestParam String tag) {
+    public ResponseEntity<List<PostDTO>> getPostsByTag(@RequestParam String tag) {
         return ResponseEntity.ok(postService.getPostsByTag(tag));
     }
 
     @PostMapping
-    public ResponseEntity<JwtService.PostDTO> createPost(@RequestBody JwtService.PostDTO postDTO) {
+    public ResponseEntity<PostDTO> createPost(@Valid @RequestBody PostDTO postDTO) {
         return ResponseEntity.status(201).body(postService.createPost(postDTO));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<JwtService.PostDTO> updatePost(@PathVariable Long id, @RequestBody JwtService.PostDTO postDTO) {
+    public ResponseEntity<PostDTO> updatePost(@PathVariable Long id, @RequestBody PostDTO postDTO) {
         return ResponseEntity.ok(postService.updatePost(id, postDTO));
     }
 

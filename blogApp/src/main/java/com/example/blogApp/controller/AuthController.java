@@ -4,6 +4,7 @@ import com.example.blogApp.dto.LoginRequest;
 import com.example.blogApp.dto.RegisterRequest;
 import com.example.blogApp.dto.UserDTO;
 import com.example.blogApp.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,13 +19,13 @@ public class AuthController {
     @Autowired
     UserService userService;
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> registerUser(@RequestBody RegisterRequest request){
+    public ResponseEntity<UserDTO> registerUser(@Valid @RequestBody RegisterRequest request) {
         UserDTO savedUser = userService.addUser(request);
         return ResponseEntity.status(201).body(savedUser);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> loginUser(@RequestBody LoginRequest request) {
+    public ResponseEntity<AuthResponse> loginUser(@Valid @RequestBody LoginRequest request) {
         AuthResponse response = userService.loginUser(request);
         return ResponseEntity.ok(response);
     }
