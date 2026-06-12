@@ -1,4 +1,5 @@
 package com.example.blogApp.controller;
+import com.example.blogApp.dto.AuthResponse;
 import com.example.blogApp.dto.LoginRequest;
 import com.example.blogApp.dto.RegisterRequest;
 import com.example.blogApp.dto.UserDTO;
@@ -23,9 +24,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserDTO> loginUser(@RequestBody LoginRequest request){
-        UserDTO userDTO = userService.loginUser(request);
-        return ResponseEntity.ok(userDTO);
+    public ResponseEntity<AuthResponse> loginUser(@RequestBody LoginRequest request) {
+        AuthResponse response = userService.loginUser(request);
+        return ResponseEntity.ok(response);
     }
 
 

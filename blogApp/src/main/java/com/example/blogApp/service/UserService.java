@@ -1,4 +1,5 @@
 package com.example.blogApp.service;
+import com.example.blogApp.dto.AuthResponse;
 import com.example.blogApp.dto.LoginRequest;
 import com.example.blogApp.dto.RegisterRequest;
 import com.example.blogApp.dto.UserDTO;
@@ -17,6 +18,9 @@ public class UserService {
     UserRepository userRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    JwtService jwtService;
+
 
     public UserDTO addUser(RegisterRequest request) {
         User user = new User();
@@ -36,11 +40,12 @@ public class UserService {
     }
 
 
-    public UserDTO loginUser(LoginRequest loginRequest) {
-        User user = findByEmail(loginRequest.getEmail());
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+    public AuthResponse loginUser(LoginRequest request) {
+        User user = findByEmail(request.getEmail());
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Wrong password");
         }
-        return UserMapper.INSTANCE.mapUserToUserDTO(user);
+        String token = jwtService.generateToken(user.getEmail());
+        return new AuthResponse(token, "Bearer", user.getId(), user.getName(), user.getEmail());
     }
 }

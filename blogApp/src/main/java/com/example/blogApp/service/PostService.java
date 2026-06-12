@@ -1,8 +1,9 @@
 package com.example.blogApp.service;
-import com.example.blogApp.dto.PostDTO;
 import com.example.blogApp.entity.Post;
+import com.example.blogApp.entity.User;
 import com.example.blogApp.mapper.PostMapper;
 import com.example.blogApp.repository.PostRepository;
+import com.example.blogApp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -13,7 +14,9 @@ public class PostService {
 
     @Autowired
     PostRepository postRepository;
-    public List<PostDTO> getAllPosts(){
+    @Autowired
+    UserRepository userRepository;
+    public List<JwtService.PostDTO> getAllPosts(){
 
         List<Post> posts = postRepository.findAll();
         return posts.stream()
@@ -21,26 +24,30 @@ public class PostService {
                 .toList();
     }
 
-    public PostDTO getPostById(Long id) {
+    public JwtService.PostDTO getPostById(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
         return PostMapper.INSTANCE.mapPostToPostDTO(post);
     }
 
-    public PostDTO createPost(PostDTO postDTO){
+    public JwtService.PostDTO createPost(JwtService.PostDTO postDTO) {
         Post post = PostMapper.INSTANCE.mapPostDTOToPost(postDTO);
-        postRepository.save(post);
-        return PostMapper.INSTANCE.mapPostToPostDTO(post);
+        User author = userRepository.findById(postDTO.getAuthorId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        post.setAuthor(author);
+
+        Post savedPost = postRepository.save(post);
+        return PostMapper.INSTANCE.mapPostToPostDTO(savedPost);
     }
 
-    public List<PostDTO> getPostsByTag(String tagName) {
+    public List<JwtService.PostDTO> getPostsByTag(String tagName) {
         List<Post> posts = postRepository.findByTags_Name(tagName);
         return posts.stream()
                 .map(post -> PostMapper.INSTANCE.mapPostToPostDTO(post))
                 .toList();
     }
 
-    public PostDTO updatePost(Long id, PostDTO postDTO) {
+    public JwtService.PostDTO updatePost(Long id, JwtService.PostDTO postDTO) {
         Post existingPost = postRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 

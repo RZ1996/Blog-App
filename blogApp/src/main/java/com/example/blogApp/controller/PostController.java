@@ -1,5 +1,5 @@
 package com.example.blogApp.controller;
-import com.example.blogApp.dto.PostDTO;
+import com.example.blogApp.service.JwtService;
 import com.example.blogApp.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,27 +16,27 @@ public class PostController {
     PostService postService;
 
     @GetMapping
-    public ResponseEntity<List<PostDTO>> getAllPosts() {
+    public ResponseEntity<List<JwtService.PostDTO>> getAllPosts() {
         return ResponseEntity.ok(postService.getAllPosts());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostDTO> getPostById(@PathVariable Long id) {
+    public ResponseEntity<JwtService.PostDTO> getPostById(@PathVariable Long id) {
         return ResponseEntity.ok(postService.getPostById(id));
     }
 
     @GetMapping("/tag")
-    public ResponseEntity<List<PostDTO>> getPostsByTag(@RequestParam String tag) {
+    public ResponseEntity<List<JwtService.PostDTO>> getPostsByTag(@RequestParam String tag) {
         return ResponseEntity.ok(postService.getPostsByTag(tag));
     }
 
     @PostMapping
-    public ResponseEntity<PostDTO> createPost(@RequestBody PostDTO postDTO) {
+    public ResponseEntity<JwtService.PostDTO> createPost(@RequestBody JwtService.PostDTO postDTO) {
         return ResponseEntity.status(201).body(postService.createPost(postDTO));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PostDTO> updatePost(@PathVariable Long id, @RequestBody PostDTO postDTO) {
+    public ResponseEntity<JwtService.PostDTO> updatePost(@PathVariable Long id, @RequestBody JwtService.PostDTO postDTO) {
         return ResponseEntity.ok(postService.updatePost(id, postDTO));
     }
 
