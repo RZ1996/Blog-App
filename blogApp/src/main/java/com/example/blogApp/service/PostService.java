@@ -7,6 +7,9 @@ import com.example.blogApp.mapper.PostMapper;
 import com.example.blogApp.repository.PostRepository;
 import com.example.blogApp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -19,11 +22,10 @@ public class PostService {
     @Autowired
     UserRepository userRepository;
 
-    public List<PostDTO> getAllPosts() {
-        List<Post> posts = postRepository.findAll();
-        return posts.stream()
-                .map(post -> PostMapper.INSTANCE.mapPostToPostDTO(post))
-                .toList();
+    public Page<PostDTO> getAllPosts(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return postRepository.findAll(pageable)
+                .map(post -> PostMapper.INSTANCE.mapPostToPostDTO(post));
     }
 
     public PostDTO getPostById(Long id) {
@@ -32,11 +34,12 @@ public class PostService {
         return PostMapper.INSTANCE.mapPostToPostDTO(post);
     }
 
-    public PostDTO createPost(PostDTO postDTO) {
+    public PostDTO createPost(PostDTO postDTO, String email) {
         Post post = PostMapper.INSTANCE.mapPostDTOToPost(postDTO);
-        User author = userRepository.findById(postDTO.getAuthorId())
+        User author = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         post.setAuthor(author);
+
         Post savedPost = postRepository.save(post);
         return PostMapper.INSTANCE.mapPostToPostDTO(savedPost);
     }

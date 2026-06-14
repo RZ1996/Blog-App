@@ -25,7 +25,6 @@ public class PostDTO {
 
     private String excerpt;
     private String authorName;
-    private Long authorId;
     private List<String> tags = new ArrayList<>();
     private String status;
     private LocalDateTime createdAt;
