@@ -2,9 +2,11 @@ package com.example.blogApp.service;
 
 import com.example.blogApp.dto.PostDTO;
 import com.example.blogApp.entity.Post;
+import com.example.blogApp.entity.Tag;
 import com.example.blogApp.entity.User;
 import com.example.blogApp.mapper.PostMapper;
 import com.example.blogApp.repository.PostRepository;
+import com.example.blogApp.repository.TagRepository;
 import com.example.blogApp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,6 +23,9 @@ public class PostService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    TagRepository tagRepository;
 
     public Page<PostDTO> getAllPosts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -39,6 +44,12 @@ public class PostService {
         User author = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         post.setAuthor(author);
+
+        if (postDTO.getTags() != null && !postDTO.getTags().isEmpty()) {
+            List<Tag> tags = tagRepository.findByNameIn(postDTO.getTags());
+            post.setTags(tags);
+        }
+
         Post savedPost = postRepository.save(post);
         return PostMapper.INSTANCE.mapPostToPostDTO(savedPost);
     }
@@ -62,6 +73,11 @@ public class PostService {
         post.setContent(postDTO.getContent());
         post.setExcerpt(postDTO.getExcerpt());
         post.setStatus(post.getStatus());
+
+        if (postDTO.getTags() != null) {
+            List<Tag> tags = tagRepository.findByNameIn(postDTO.getTags());
+            post.setTags(tags);
+        }
 
         Post savedPost = postRepository.save(post);
         return PostMapper.INSTANCE.mapPostToPostDTO(savedPost);
