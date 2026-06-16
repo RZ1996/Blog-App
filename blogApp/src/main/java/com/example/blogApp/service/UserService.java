@@ -34,11 +34,6 @@ public class UserService {
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
     }
-    public User findById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-    }
-
 
     public AuthResponse loginUser(LoginRequest request) {
         User user = findByEmail(request.getEmail());

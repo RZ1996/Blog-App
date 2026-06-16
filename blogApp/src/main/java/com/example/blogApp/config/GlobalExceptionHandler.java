@@ -11,21 +11,17 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
-        ErrorResponse error = new ErrorResponse(
-                404,
-                e.getMessage(),
-                LocalDateTime.now()
-        );
-        return ResponseEntity.status(404).body(error);
+        if (e.getMessage() != null && e.getMessage().contains("Unauthorized")) {
+            return ResponseEntity.status(403)
+                    .body(new ErrorResponse(403, e.getMessage(), LocalDateTime.now()));
+        }
+        return ResponseEntity.status(404)
+                .body(new ErrorResponse(404, e.getMessage(), LocalDateTime.now()));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
-        ErrorResponse error = new ErrorResponse(
-                500,
-                "Internal server error",
-                LocalDateTime.now()
-        );
-        return ResponseEntity.status(500).body(error);
+        return ResponseEntity.status(500)
+                .body(new ErrorResponse(500, "Internal server error", LocalDateTime.now()));
     }
 }

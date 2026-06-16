@@ -50,13 +50,22 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PostDTO> updatePost(@PathVariable Long id, @RequestBody PostDTO postDTO) {
-        return ResponseEntity.ok(postService.updatePost(id, postDTO));
+    public ResponseEntity<PostDTO> updatePost(
+            @PathVariable Long id,
+            @Valid @RequestBody PostDTO postDTO) {
+
+        String email = SecurityContextHolder.getContext()
+                .getAuthentication().getName();
+
+        return ResponseEntity.ok(postService.updatePost(id, postDTO, email));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
-        postService.deletePost(id);
+        String email = SecurityContextHolder.getContext()
+                .getAuthentication().getName();
+
+        postService.deletePost(id, email);
         return ResponseEntity.noContent().build();
     }
 }

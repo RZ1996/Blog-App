@@ -39,7 +39,6 @@ public class PostService {
         User author = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         post.setAuthor(author);
-
         Post savedPost = postRepository.save(post);
         return PostMapper.INSTANCE.mapPostToPostDTO(savedPost);
     }
@@ -51,19 +50,31 @@ public class PostService {
                 .toList();
     }
 
-    public PostDTO updatePost(Long id, PostDTO postDTO) {
-        Post existingPost = postRepository.findById(id)
+    public PostDTO updatePost(Long id, PostDTO postDTO, String email) {
+        Post post = postRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
-        existingPost.setTitle(postDTO.getTitle());
-        existingPost.setContent(postDTO.getContent());
-        Post savedPost = postRepository.save(existingPost);
+
+        if (!post.getAuthor().getEmail().equals(email)) {
+            throw new RuntimeException("Unauthorized access");
+        }
+
+        post.setTitle(postDTO.getTitle());
+        post.setContent(postDTO.getContent());
+        post.setExcerpt(postDTO.getExcerpt());
+        post.setStatus(post.getStatus());
+
+        Post savedPost = postRepository.save(post);
         return PostMapper.INSTANCE.mapPostToPostDTO(savedPost);
     }
 
-    public void deletePost(Long id) {
-        if (!postRepository.existsById(id)) {
-            throw new RuntimeException("Post not found");
+    public void deletePost(Long id, String email) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        if (!post.getAuthor().getEmail().equals(email)) {
+            throw new RuntimeException("Unauthorized access");
         }
+
         postRepository.deleteById(id);
     }
 }
